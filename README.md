@@ -1,5 +1,5 @@
 # Sentinel: Command Line Interface
-Command Line Interface and Python Library for running Sentinel algorithms locally
+Command Line Interface and Python Library for running Sentinel algorithms locally on that old Toughbook you lugged out into the field (or your fancy desktop)
 
 
 ![gorillas (1)](https://user-images.githubusercontent.com/28448427/159202229-69af38ce-b487-46b4-9bea-53c477d7c5ab.gif)
