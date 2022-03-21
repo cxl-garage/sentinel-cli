@@ -1,18 +1,22 @@
 # Sentinel: Command Line Interface
 Command Line Interface and Python Library for running Sentinel algorithms locally
 
+![image](https://user-images.githubusercontent.com/28448427/159201679-550ce6cd-bf8e-42aa-8d34-4657a480537a.png)
+
+
 ## Purpose
-Conservation X Labs aims to make the deployment of customized machine learning models as simple as possible across all endpoints (Sentinel Field-Hardware, Offline Laptops, Cloud). 
+The greatest issues conservationists face today include collecting and manually processing mountains of environmental data. These enormous costs come from collecting SD cards and manually processing hundreds of thousands of images. The slow time to get information from this collected data allows for no chance to take action directly on what’s going on. Solutions exist in the form of advancing artificial intelligence technologies but their technical difficulty puts them out of reach of conservationists. We seek to bridge that divide. Conservation X Labs aims to make the deployment of customized machine learning models as simple as possible across all endpoints (Sentinel Field-Hardware, Offline Laptops, Cloud). 
+
+This software is designed to run custom offline machine learning models across many images/videos on customer laptops or desktops. This will likely be used in field scenarios where:
+- Sorting into categories that you defined yourself!
+- Data sorting is required without reliable internet connection
+- Lighter-weight models that run on any old laptop
+- Privacy is paramount 
+
+In the near future we will offer common scenaros models as a free container. Right now this is only available to early Sentinel users. If you are interested in being an early user, please reach out to sentinel@conservationxlabs.org 
 
 *Note: We recognize that requiring the use of the Command Line is not the most user friendly approach, so we are actively developing a graphical user interface (GUI). However this code will continue to be supported and form a defacto API of sorts.* 
 
-This software is designed to run custom offline machine learning models across many images/videos on customer laptops or desktops. This will likely be used in field scenarios where:
-- Rapid sorting with lighter-weight models
-- Sorting into categories that you define!
-- Data sorting is required without reliable internet connection. 
-- Privacy is paramount
-
-**In the near future we will offer common scenaros models as a free container. Right now this is only available to early Sentinel users**
 
 
 ## CLI Feature Progress
