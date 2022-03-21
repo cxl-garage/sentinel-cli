@@ -52,7 +52,7 @@ This wil be downloaded by the python script, so dont worry about downloading thi
 ## Installation Instructions
 
 1. Install [Python](https://www.python.org/downloads/)
-2. Download Sentinel Python Package ```pip install sentinel_local```
+2. Download Sentinel Python Package ```pip install -r requirements.txt```
 3. If using private algorithms (you should know if this is the case) - add the provided .json key to your machine
 4. Follow Usage Instructions
 
