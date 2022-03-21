@@ -102,7 +102,8 @@ def process(filename):
             img = Image.open(filename)      
             image = img.resize([input_size,input_size])
             if output_size != 'None':
-                image_out = img.resize([int(output_size),int(output_size)])
+                w, h = img.size
+                image_out = img.resize([int(output_size),int(int(output_size)/w*h)])
             else:
                 image_out = img
             width_out, height_out = image_out.size
@@ -275,7 +276,7 @@ def run():
     parser.add_argument('--max_images', type=int,
                         help='size of images into model')
     parser.add_argument('--output_size', type=int,
-                        help='size of images into model')
+                        help='size of images into output folder')
     parser.add_argument('--overwrite', action='store_true',
                         help='size of images into model')
     parser.add_argument('--only_timelapse',action='store_true',
