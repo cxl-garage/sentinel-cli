@@ -1,14 +1,15 @@
 # Sentinel: Command Line Interface
 Command Line Interface and Python Library for running Sentinel algorithms locally
 
-![image](https://user-images.githubusercontent.com/28448427/159201679-550ce6cd-bf8e-42aa-8d34-4657a480537a.png)
 
+![gorillas (1)](https://user-images.githubusercontent.com/28448427/159202229-69af38ce-b487-46b4-9bea-53c477d7c5ab.gif)
+> Example of customized behavioral model that can be run through this system. Custom species, sex, collar/no-collar models can also be created
 
 ## Purpose
 The greatest issues conservationists face today include collecting and manually processing mountains of environmental data. These enormous costs come from collecting SD cards and manually processing hundreds of thousands of images. The slow time to get information from this collected data allows for no chance to take action directly on what’s going on. Solutions exist in the form of advancing artificial intelligence technologies but their technical difficulty puts them out of reach of conservationists. We seek to bridge that divide. Conservation X Labs aims to make the deployment of customized machine learning models as simple as possible across all endpoints (Sentinel Field-Hardware, Offline Laptops, Cloud). 
 
 This software is designed to run custom offline machine learning models across many images/videos on customer laptops or desktops. This will likely be used in field scenarios where:
-- Sorting into categories that you defined yourself!
+- Sorting into categories that you defined yourself! (This could include behavior (video), species, sex, collared - or anything else you like to seperate your data by)
 - Data sorting is required without reliable internet connection
 - Lighter-weight models that run on any old laptop
 - Privacy is paramount 
@@ -106,6 +107,7 @@ Tips:
 - Put quotes around the input/output paths
 - Paramaters can be left blank, but user will be prompted 
 - Your system may require python3 instead of python
+
 
 
 ## Python Scripting (coming soon...)
