@@ -79,13 +79,8 @@ def generate_timelapse_file(opt):
     with open(r'{}/timelapse.json'.format(opt.output), 'w') as outfile:
         outfile.write(json_object)
 
-def download():
-    ## Define CLI Variables
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--org', type=str,
-                        help='which org to run')                     
-    opt = parser.parse_args()
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS']='key.json'
+def download(opt):
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS']=opt.key
     os.system("docker pull us-west2-docker.pkg.dev/sentinel-project-278421/{}/{}:latest".format(opt.org,opt.org))
 
 ## Function to process the image (this is a threaded function)
@@ -271,7 +266,9 @@ def run():
     parser.add_argument('--input', type=str,
                         help='Folder to be processed')
     parser.add_argument('--output', type=str,
-                        help='Folder to where results are put')                                
+                        help='Folder to where results are put')
+    parser.add_argument('--key', type=str,
+                        help='Path to auth key')                                                    
     parser.add_argument('--thresh', type=int,
                         default=40, help='threshold of model')
     parser.add_argument('--output_style', type=str,
@@ -291,6 +288,8 @@ def run():
     if opt.only_timelapse:
         generate_timelapse_file(opt)
         sys.exit(1)
+    
+
     
     client = docker.from_env()
 
@@ -315,8 +314,13 @@ def run():
                 container = client.containers.get(containers[0].name)
                 break
         except Exception as e:
-                print(e) 
-                opt.org = input("Organization Name not found, please retry: ") 
+                print(e)
+                if opt.key is None:
+                    opt.key = input("Path to credential key: ")
+                else:
+                    print('Error finding model. Please rety')
+                    opt.org = input("Organization Name: ") 
+                    opt.key = input("Path to credential key: ")
 
     if opt.model is None:
         opt.model = input("Model: ")
