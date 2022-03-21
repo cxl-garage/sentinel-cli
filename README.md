@@ -20,6 +20,8 @@ This repo is the high-level functionality of the system, such as selecting:
 - Organization/Model Selection
 - Input Folders
 
+These instructions have been tested on Windows and Linux
+
 ### Docker: Organization-Specific Algorithms
 We use Docker to manage the difficulties of different dependencies (Operating Systems, existing tensorflow installations) that will inevitably be present on people's systems. It also allows us to update/fix systems, algorithms on-the-go.
 

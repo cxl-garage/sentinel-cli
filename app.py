@@ -314,14 +314,14 @@ def run():
                 container = client.containers.get(containers[0].name)
                 break
         except Exception as e:
-                print(e)
+                print()
                 if opt.key is None:
                     opt.key = input("Path to credential key: ")
                 else:
                     print('Error finding model. Please rety')
                     opt.org = input("Organization Name: ") 
                     opt.key = input("Path to credential key: ")
-                download.opt()
+                download(opt)
     
     if opt.model is None:
         opt.model = input("Model: ")
