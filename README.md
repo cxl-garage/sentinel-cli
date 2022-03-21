@@ -89,7 +89,7 @@ API Guide:
 - --key: Path to credential key (provided by CXL to organization) (necessary to download model the first time) (Full and relative paths should work)
 - --input: Input Directory Path (Full and relative paths should work)
 - --output: Output Directory Path (Full and relative paths should work)
-- --thresh: The confidence threshold (0-100) of the chosen model. Note that early models by CXL have not been normalized and so confidence may nned set be lower than normal (25-30)
+- --thresh: The confidence threshold (0-100) of the chosen model. Note that early models by CXL have not been normalized and so confidence may need to be set lower than normal (25-30)
 - --output_style: How to display output data - files always have the same name as original input. 
   - "hierachy": (default) images are tagged with bounded boxes and saved in same structure as the input directory (but in the output directory)
   - "flat": images are tagged with bounded boxes and are saved all in the output folder with no hierachy
