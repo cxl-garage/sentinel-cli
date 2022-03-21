@@ -79,9 +79,6 @@ def generate_timelapse_file(opt):
     with open(r'{}/timelapse.json'.format(opt.output), 'w') as outfile:
         outfile.write(json_object)
 
-def download(opt):
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS']=opt.key
-    os.system("docker pull us-west2-docker.pkg.dev/sentinel-project-278421/{}/{}:latest".format(opt.org,opt.org))
 
 ## Function to process the image (this is a threaded function)
 def process(filename):
@@ -314,14 +311,20 @@ def run():
                 container = client.containers.get(containers[0].name)
                 break
         except Exception as e:
-                print()
+                
                 if opt.key is None:
                     opt.key = input("Path to credential key: ")
-                else:
+                
+                os.environ['GOOGLE_APPLICATION_CREDENTIALS']=opt.key
+                
+                try:
+                    print('Downloading Image from Google Cloud Platform')
+                    client.images.pull(container_name)
+                except Exception as e:
                     print('Error finding model. Please rety')
                     opt.org = input("Organization Name: ") 
                     opt.key = input("Path to credential key: ")
-                download(opt)
+                    
     
     if opt.model is None:
         opt.model = input("Model: ")
