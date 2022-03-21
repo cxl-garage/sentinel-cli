@@ -20,6 +20,8 @@ This repo is the high-level functionality of the system, such as selecting:
 - Organization/Model Selection
 - Input Folders
 
+These instructions have been tested on Windows and Linux
+
 ### Docker: Organization-Specific Algorithms
 We use Docker to manage the difficulties of different dependencies (Operating Systems, existing tensorflow installations) that will inevitably be present on people's systems. It also allows us to update/fix systems, algorithms on-the-go.
 
@@ -62,6 +64,8 @@ API Guide:
   - "class": images are tagged with bounded boxes and are saved into class (rat, cat, zebra etc.) and empty folders
   - "timelapse": images are saved in hierachy structure but an additional Timelapse .json is generated for input into Timelapse. No bounded boxes are tagged
   - "none": images are not saved. Only csv of detections is generated
+- --input size: size of images into model (default is 256). If you want to change use 128 or 512.
+- --output_size: size of images saved to output directory 
 - --max_images: limit the number of images to process. Default behavior is to process all images in directory (and subdirectories)
 - --overwrite: clear the output directory (useful if re-running the script)
 - --only_timelapse: run the timelapse generator only (note that other variables are still needed)

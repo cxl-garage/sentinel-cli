@@ -79,9 +79,6 @@ def generate_timelapse_file(opt):
     with open(r'{}/timelapse.json'.format(opt.output), 'w') as outfile:
         outfile.write(json_object)
 
-def download(opt):
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS']=opt.key
-    os.system("docker pull us-west2-docker.pkg.dev/sentinel-project-278421/{}/{}:latest".format(opt.org,opt.org))
 
 ## Function to process the image (this is a threaded function)
 def process(filename):
@@ -105,7 +102,8 @@ def process(filename):
             img = Image.open(filename)      
             image = img.resize([input_size,input_size])
             if output_size != 'None':
-                image_out = img.resize([int(output_size),int(output_size)])
+                w, h = img.size
+                image_out = img.resize([int(output_size),int(int(output_size)/w*h)])
             else:
                 image_out = img
             width_out, height_out = image_out.size
@@ -278,7 +276,7 @@ def run():
     parser.add_argument('--max_images', type=int,
                         help='size of images into model')
     parser.add_argument('--output_size', type=int,
-                        help='size of images into model')
+                        help='size of images into output folder')
     parser.add_argument('--overwrite', action='store_true',
                         help='size of images into model')
     parser.add_argument('--only_timelapse',action='store_true',
@@ -314,14 +312,21 @@ def run():
                 container = client.containers.get(containers[0].name)
                 break
         except Exception as e:
-                print(e)
+                
                 if opt.key is None:
                     opt.key = input("Path to credential key: ")
-                else:
-                    print('Error finding model. Please rety')
-                    opt.org = input("Organization Name: ") 
-                    opt.key = input("Path to credential key: ")
-                download.opt()
+                
+                query = f'cat {opt.key} | docker login -u _json_key_base64 --password-stdin https://us-west2-docker.pkg.dev'
+                print(query)
+                os.system(query)
+                try:
+                    print(f'Downloading Image from Google Cloud Platform with {opt.key} credentials')
+                    client.images.pull(container_name)
+                except Exception as e:
+                    print(e)
+                    print('Error finding model. Please check organization and key.')
+                    sys.exit()
+                    
     
     if opt.model is None:
         opt.model = input("Model: ")
