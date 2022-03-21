@@ -4,7 +4,7 @@ Command Line Interface and Python Library for running Sentinel algorithms locall
 ## Purpose
 Conservation X Labs aims to make the deployment of customized machine learning models as simple as possible across all endpoints (Sentinel Field-Hardware, Offline Laptops, Cloud). 
 
-> In the near future we will offer common scenaros models as a free container. Right now this is only available to early Sentinel users
+*Note: We recognize that requiring the use of the Command Line is not the most user friendly approach, so we are actively developing a graphical user interface (GUI). However this code will continue to be supported and form a defacto API of sorts. 
 
 This software is designed to run custom offline machine learning models across many images/videos on customer laptops or desktops. This will likely be used in field scenarios where:
 - Rapid sorting with lighter-weight models
@@ -12,12 +12,15 @@ This software is designed to run custom offline machine learning models across m
 - Data sorting is required without reliable internet connection. 
 - Privacy is paramount
 
+**In the near future we will offer common scenaros models as a free container. Right now this is only available to early Sentinel users
+
 ## CLI Feature Progress
 
 - [x] Stable Command Line Interface to run image folders on custom Sentinel models 
 - [x] Parallel processing
 - [x] Integration into Timelapse workflow
 - [ ] Creation of custom Timelapse template for auditing
+- [ ] Publish pip package with entry points
 - [ ] Python Scripting Capabilities
 - [ ] Basic GUI
 - [ ] Support for videos
@@ -49,12 +52,15 @@ This wil be downloaded by the python script, so dont worry about downloading thi
 >Please run the python script at least once before being offline to ensure your org's docker container is downloaded
 
 
-## Installation Instructions
+## Instructions
+
+### Installation
 
 1. Install [Python](https://www.python.org/downloads/)
-2. Download Sentinel Python Package ```pip install -r requirements.txt```
-3. If using private algorithms (you should know if this is the case) - add the provided .json key to your machine
-4. Follow Usage Instructions
+3. Pull this repo
+4. Download Sentinel Python Package ```pip install -r requirements.txt```
+5. If using private algorithms (you should know if this is the case) - add the provided .json key to your machine
+6. Follow Usage Instructions
 
 ## CLI (Command Line Interface) Example Command
 
