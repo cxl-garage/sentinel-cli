@@ -315,15 +315,16 @@ def run():
                 if opt.key is None:
                     opt.key = input("Path to credential key: ")
                 
-                os.environ['GOOGLE_APPLICATION_CREDENTIALS']=opt.key
-                
+                query = f'cat {opt.key} | docker login -u _json_key_base64 --password-stdin https://us-west2-docker.pkg.dev'
+                print(query)
+                os.system(query)
                 try:
-                    print('Downloading Image from Google Cloud Platform')
+                    print(f'Downloading Image from Google Cloud Platform with {opt.key} credentials')
                     client.images.pull(container_name)
                 except Exception as e:
-                    print('Error finding model. Please rety')
-                    opt.org = input("Organization Name: ") 
-                    opt.key = input("Path to credential key: ")
+                    print(e)
+                    print('Error finding model. Please check organization and key.')
+                    sys.exit()
                     
     
     if opt.model is None:
