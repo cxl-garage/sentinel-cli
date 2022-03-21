@@ -4,7 +4,7 @@ Command Line Interface and Python Library for running Sentinel algorithms locall
 ## Purpose
 Conservation X Labs aims to make the deployment of customized machine learning models as simple as possible across all endpoints (Sentinel Field-Hardware, Offline Laptops, Cloud). 
 
-*Note: We recognize that requiring the use of the Command Line is not the most user friendly approach, so we are actively developing a graphical user interface (GUI). However this code will continue to be supported and form a defacto API of sorts. 
+*Note: We recognize that requiring the use of the Command Line is not the most user friendly approach, so we are actively developing a graphical user interface (GUI). However this code will continue to be supported and form a defacto API of sorts.* 
 
 This software is designed to run custom offline machine learning models across many images/videos on customer laptops or desktops. This will likely be used in field scenarios where:
 - Rapid sorting with lighter-weight models
@@ -12,7 +12,7 @@ This software is designed to run custom offline machine learning models across m
 - Data sorting is required without reliable internet connection. 
 - Privacy is paramount
 
-**In the near future we will offer common scenaros models as a free container. Right now this is only available to early Sentinel users
+**In the near future we will offer common scenaros models as a free container. Right now this is only available to early Sentinel users**
 
 ## CLI Feature Progress
 
