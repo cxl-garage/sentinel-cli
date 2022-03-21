@@ -4,9 +4,11 @@ Command Line Interface and Python Library for running Sentinel algorithms locall
 ## Purpose
 Conservation X Labs aims to make the deployment of customized machine learning models as simple as possible across all endpoints (Sentinel Field-Hardware, Offline Laptops, Cloud). 
 
-In the near future we will offer common models as a free container
+In the near future we will offer common scenaros models as a free container. 
 
 This software is designed to run custom offline machine learning models across many images/videos on customer laptops or desktops. This will likely be used in field scenarios where:
+- Rapid sorting with lighter-weight models
+- Sorting into categories that you define!
 - Data sorting is required without reliable internet connection. 
 - Privacy is paramount
 
@@ -38,23 +40,21 @@ This wil be downloaded by the python script, so dont worry about downloading thi
 ### User Input 
 ```
   python app.py 
-  
 ```
 User will be prompted for paramaters in the command line. See API Guide below
 
 ### No user input
 ```
-  python app.py --org <ORG_NAME> --model <MODEL_NAME> --input <INPUT_PATH> --output <OUTPUT_PATH> --thresh <CONFIDENCE_THRESHOLD> --output_style <HIERACHY>
-  
+  python app.py --org <ORG_NAME> --model <MODEL_NAME> --input <INPUT_PATH> --output <OUTPUT_PATH> --thresh <CONFIDENCE_THRESHOLD> --output_style <HIERACHY
 ```
 
 API Guide:
 
 - --org: Name of organization that owns the algorithm (future public docker container will be "cxl"). Please reach out to Conservation X Labs if this is unknown
 - --model: Model name (this should be known by org)
-- --key: Path to credential key (provided by CXL to organization) (necessary to download model the first time)
-- --input: Input Directory Path
-- --output: Output Directory Path
+- --key: Path to credential key (provided by CXL to organization) (necessary to download model the first time) (Full and relative paths should work)
+- --input: Input Directory Path (Full and relative paths should work)
+- --output: Output Directory Path (Full and relative paths should work)
 - --thresh: The confidence threshold (0-100) of the chosen model. Note that early models by CXL have not been normalized and so confidence may nned set be lower than normal (25-30)
 - --output_style: How to display output data - files always have the same name as original input. 
   - "hierachy": (default) images are tagged with bounded boxes and saved in same structure as the input directory (but in the output directory)

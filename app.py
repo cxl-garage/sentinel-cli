@@ -321,7 +321,8 @@ def run():
                     print('Error finding model. Please rety')
                     opt.org = input("Organization Name: ") 
                     opt.key = input("Path to credential key: ")
-
+                download.opt()
+    
     if opt.model is None:
         opt.model = input("Model: ")
 
