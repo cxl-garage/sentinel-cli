@@ -12,11 +12,10 @@ This software is designed to run custom offline machine learning models across m
 - Data sorting is required without reliable internet connection. 
 - Privacy is paramount
 
-> Current speeds 
-
 ### CLI Feature Progress
 
 - [x] Stable Command Line Interface to run image folders on custom Sentinel models 
+- [x] Parallel processing
 - [x] Integration into Timelapse workflow
 - [ ] Creation of custom Timelapse template for auditing
 - [ ] Python Scripting Capabilities
