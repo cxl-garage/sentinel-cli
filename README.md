@@ -12,7 +12,7 @@ This software is designed to run custom offline machine learning models across m
 - Data sorting is required without reliable internet connection. 
 - Privacy is paramount
 
-### CLI Feature Progress
+## CLI Feature Progress
 
 - [x] Stable Command Line Interface to run image folders on custom Sentinel models 
 - [x] Parallel processing
