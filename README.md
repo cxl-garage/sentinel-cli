@@ -4,13 +4,33 @@ Command Line Interface and Python Library for running Sentinel algorithms locall
 ## Purpose
 Conservation X Labs aims to make the deployment of customized machine learning models as simple as possible across all endpoints (Sentinel Field-Hardware, Offline Laptops, Cloud). 
 
-In the near future we will offer common scenaros models as a free container. 
+> In the near future we will offer common scenaros models as a free container. Right now this is only available to early Sentinel users
 
 This software is designed to run custom offline machine learning models across many images/videos on customer laptops or desktops. This will likely be used in field scenarios where:
 - Rapid sorting with lighter-weight models
 - Sorting into categories that you define!
 - Data sorting is required without reliable internet connection. 
 - Privacy is paramount
+
+> Current speeds 
+
+### CLI Feature Progress
+
+- [x] Stable Command Line Interface to run image folders on custom Sentinel models 
+- [x] Integration into Timelapse workflow
+- [ ] Creation of custom Timelapse template for auditing
+- [ ] Python Scripting Capabilities
+- [ ] Basic GUI
+- [ ] Support for videos
+- [ ] Model Feedback Loop
+
+### Model Creation Progress
+- [ ] GPU Support
+- [ ] Creation of publicly available model(s) option for testing 
+- [ ] Integration of Megadetector and Megaclassifier
+- [ ] Integration into Sentinel Model Marketplace
+
+> If there are feature requests (or bugs) please reach out to sentinel@conservationxlabs.org or add an issue
 
 
 ## High Level Overview
@@ -20,14 +40,14 @@ This repo is the high-level functionality of the system, such as selecting:
 - Organization/Model Selection
 - Input Folders
 
-These instructions have been tested on Windows and Linux
+>These instructions have been tested on Windows and Linux
 
 ### Docker: Organization-Specific Algorithms
 We use Docker to manage the difficulties of different dependencies (Operating Systems, existing tensorflow installations) that will inevitably be present on people's systems. It also allows us to update/fix systems, algorithms on-the-go.
 
 This wil be downloaded by the python script, so dont worry about downloading this, it will be done automatically. Each Conservation  X Labs customer will have a docker container with their most up-to-date algorithms pre-loaded with the latest TensorFlow libraries. As new/updated algorithms are made, your new algorithms can be found here.
 
-===Please run the python script at least once before being offline to ensure your org's docker container is downloaded===
+>Please run the python script at least once before being offline to ensure your org's docker container is downloaded
 
 
 ## Installation Instructions
