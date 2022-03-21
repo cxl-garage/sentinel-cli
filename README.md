@@ -14,7 +14,9 @@ This software is designed to run custom offline machine learning models across m
 
 **In the near future we will offer common scenaros models as a free container. Right now this is only available to early Sentinel users**
 
+
 ## CLI Feature Progress
+This tool is a work in progress. If there are feature requests (or bugs) please reach out to sentinel@conservationxlabs.org or add an issue.
 
 - [x] Stable Command Line Interface to run image folders on custom Sentinel models 
 - [x] Parallel processing
@@ -27,12 +29,12 @@ This software is designed to run custom offline machine learning models across m
 - [ ] Model Feedback Loop
 
 ### Model Creation Progress
+Models are currently made outside of this repository by Conservation X Labs, and served as Docker containers. Tools to create custom models will be published at a later date. However, our internal progress can be monitored here.
+
 - [ ] GPU Support
-- [ ] Creation of publicly available model(s) option for testing 
+- [ ] Creation of publicly available model(s) option for testing
 - [ ] Integration of Megadetector and Megaclassifier
 - [ ] Integration into Sentinel Model Marketplace
-
-> If there are feature requests (or bugs) please reach out to sentinel@conservationxlabs.org or add an issue
 
 
 ## High Level Overview
