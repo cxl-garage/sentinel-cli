@@ -63,8 +63,7 @@ This wil be downloaded by the python script, so dont worry about downloading thi
 
 ### Installation
 
-1. Install [Python](https://www.python.org/downloads/) 
-2. (Optional) Install [Anaconda](https://www.anaconda.com/products/distribution) if you are concerned about your other code (it makes creating virtual environments very easy)
+1. Install [Python](https://www.python.org/downloads/) OR (Optional) Install [Anaconda](https://www.anaconda.com/products/distribution) if you are concerned about your other code on your system. Anaconda also makes managing python versions and creating virtual environments very easy.
 3. Clone this repo either through command line (```git clone https://github.com/cxl-garage/sentinel-cli.git```) or use [GitHub Desktop](https://desktop.github.com/)
 4. Download Sentinel Python Package ```pip install -r requirements.txt```
 5. If using private algorithms (you should know if this is the case) - add the provided .json key to your machine
