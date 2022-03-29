@@ -19,6 +19,14 @@ import sys
 import shutil
 import pandas as pd
 from datetime import datetime
+from PyInquirer import prompt, print_json
+
+
+def check_available_algs(container): 
+    x = container.exec_run('env')
+    y = x[1].decode('utf-8').split('\n')
+    available_models = [i for i in y if 'AVAILABLE_MODELS' in i][0].split('=')[-1]
+    return available_models
 
 def generate_timelapse_file(opt):
     print('\nGenerating timelapse json file')
@@ -198,7 +206,7 @@ def main(opt,container=None):
     except Exception as e:
         print('Error')
         GPU_num = 'Unknown'
-    print(f"CPUs Available: {os.cpu_count()} GPUs Available: {GPU_num}")
+    print(f"CPUs Available: {os.cpu_count()}, GPUs Available: {GPU_num}")
     time.sleep(3)
 
 
@@ -259,8 +267,7 @@ def run():
                     help='Download image') 
     parser.add_argument('--org', type=str,
                         help='which org to run')                
-    parser.add_argument('--model', type=str,
-                        default=256, help='which model to run')                      
+    parser.add_argument('--model', type=str, help='which model to run')                      
     parser.add_argument('--input', type=str,
                         help='Folder to be processed')
     parser.add_argument('--output', type=str,
@@ -327,9 +334,24 @@ def run():
                     print('Error finding model. Please check organization and key.')
                     sys.exit()
                     
+    available_algs = check_available_algs(container).split(',')
+    alg_predefined=False
+    for alg in available_algs:
+        if alg == opt.model:
+            alg_predefined=True
+            print('Model found!')
     
-    if opt.model is None:
-        opt.model = input("Model: ")
+    if opt.model is None or alg_predefined==False:
+        questions = [
+            {
+                'type': 'list',
+                'name': 'model',
+                'message': 'Model either not defined or incorrectly specified. Please select from available algorithms',
+                'choices': available_algs,
+            }
+        ]
+
+        opt.model = prompt(questions)['model']
 
     while True:
         if opt.input is None:
