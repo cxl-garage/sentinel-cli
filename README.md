@@ -101,9 +101,9 @@ API Guide:
 - --output: Output Directory Path (Full and relative paths should work)
 - --thresh: The confidence threshold (0-100) of the chosen model. Note that early models by CXL have not been normalized and so confidence may need to be set lower than normal (25-30)
 - --output_style: How to display output data - files always have the same name as original input. 
-  - "hierachy": (default) images are tagged with bounded boxes and saved in same structure as the input directory (but in the output directory)
+  - "class": (default) images are tagged with bounded boxes and are saved into class (rat, cat, zebra etc.) and empty folders
+  - "hierachy": images are tagged with bounded boxes and saved in same structure as the input directory (but in the output directory)
   - "flat": images are tagged with bounded boxes and are saved all in the output folder with no hierachy
-  - "class": images are tagged with bounded boxes and are saved into class (rat, cat, zebra etc.) and empty folders
   - "timelapse": images are saved in hierachy structure but an additional Timelapse .json is generated for input into Timelapse. No bounded boxes are tagged
   - "none": images are not saved. Only csv of detections is generated
 - --input size: size of images into model (default is 256). If you want to change use 128 or 512.
