@@ -63,7 +63,8 @@ This wil be downloaded by the python script, so dont worry about downloading thi
 
 ### Installation
 
-1. Install [Python](https://www.python.org/downloads/)
+1. Install [Python](https://www.python.org/downloads/) 
+2. (Optional) Install [Anaconda](https://www.anaconda.com/products/distribution) if you are concerned about your other code (it makes creating virtual environments very easy)
 3. Pull this repo
 4. Download Sentinel Python Package ```pip install -r requirements.txt```
 5. If using private algorithms (you should know if this is the case) - add the provided .json key to your machine
@@ -81,6 +82,8 @@ User will be prompted for paramaters in the command line. See API Guide below
 ```
   python app.py --org <ORG_NAME> --model <MODEL_NAME> --input <INPUT_PATH> --output <OUTPUT_PATH> --thresh <CONFIDENCE_THRESHOLD> --output_style <HIERACHY>
 ```
+
+Note: You should put your stuff between the <>
 
 API Guide:
 
