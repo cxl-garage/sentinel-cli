@@ -337,6 +337,7 @@ def run():
             try:
                 print(f'Downloading Image from Google Cloud Platform with {opt.key} credentials')
                 client.images.pull(container_name)
+                container = client.containers.run(container_name,detach=True, name=f'sentinel_{opt.org}',ports={8501:8501},cpu_count=5,mem_limit='5g')
             except Exception as e:
                 print(e)
                 print('Error finding model. Please check organization and key.')
