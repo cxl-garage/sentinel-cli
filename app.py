@@ -19,7 +19,17 @@ import sys
 import shutil
 import pandas as pd
 from datetime import datetime
-from PyInquirer import prompt, print_json
+from PyInquirer import prompt
+import platform
+import urllib.request
+
+
+def connect(host='http://google.com'):
+    try:
+        urllib.request.urlopen(host) #Python 3.x
+        return True
+    except:
+        return False
 
 
 def check_available_algs(container): 
@@ -105,7 +115,8 @@ def process(filename):
     if len(glob.glob(f"{output}/**/{os.path.basename(filename)}")) != 0:
         return 'Processed'
     else:
-        try:
+        #try:
+        if True:
             t1 = time.time()         
             img = Image.open(filename)      
             image = img.resize([input_size,input_size])
@@ -125,6 +136,7 @@ def process(filename):
             data = json.dumps({"signature_name": "serving_default", "instances": im})
             headers = {"content-type": "application/json"}
             json_response = requests.post(url, data=data, headers=headers)
+    
             predictions = json.loads(json_response.text)['predictions'][0]
             t3 = time.time() 
 
@@ -180,9 +192,9 @@ def process(filename):
                     os.makedirs(out_path.replace(os.path.basename(filename),''))
                     image_out.save(out_path)
             t4 = time.time() 
-        except Exception as e:
-            print(e)
-            detections.append([os.path.basename(filename),99,0,filename,''])
+        #except Exception as e:
+        #    print(e)
+         #   detections.append([os.path.basename(filename),99,0,filename,''])
         return detections
 
 
@@ -298,41 +310,34 @@ def run():
     
     client = docker.from_env()
 
-    container_name = "us-west2-docker.pkg.dev/sentinel-project-278421/{}/{}".format(opt.org,opt.org)
 
-    while True:
-        ## Check Organization Bucket
-        if opt.org is None:
-            opt.org = input("Organization Name: ")
-        try:
-            containers = client.containers.list(filters={"name":f"sentinel_{opt.org}"})
-            if len(containers) == 0:
-                # Download and start container if necessary
-                client.containers.prune()
-                print('Starting container... (must be connected to internet for first time download)')
-                container = client.containers.run(container_name,detach=True, name=f'sentinel_{opt.org}',ports={8501:8501},cpu_count=5,mem_limit='5g')    
-                print('Container created successfully')
-                time.sleep(5)
-                break
-            else:
-                print('Attaching to existing container')
-                container = client.containers.get(containers[0].name)
-                break
-        except Exception as e:
-                
-                if opt.key is None:
-                    opt.key = input("Path to credential key: ")
-                
+    ## Check Organization Bucket
+    if opt.org is None:
+        opt.org = input("Organization Name: ")
+    container_name = "us-west2-docker.pkg.dev/sentinel-project-278421/{}/{}".format(opt.org,opt.org)
+    try:
+        query = f'docker kill sentinel_{opt.org}'
+        os.system(query)
+        client.containers.prune()
+        client.images.pull(container_name)
+        container = client.containers.run(container_name,detach=True, name=f'sentinel_{opt.org}',ports={8501:8501},cpu_count=5,mem_limit='5g')
+        print('Container created successfully')
+    except Exception as e:
+            
+            if opt.key is None:
+                opt.key = input("Path to credential key: ")
+            if platform.system() == 'Linux':
                 query = f'cat {opt.key} | docker login -u _json_key_base64 --password-stdin https://us-west2-docker.pkg.dev'
-                print(query)
-                os.system(query)
-                try:
-                    print(f'Downloading Image from Google Cloud Platform with {opt.key} credentials')
-                    client.images.pull(container_name)
-                except Exception as e:
-                    print(e)
-                    print('Error finding model. Please check organization and key.')
-                    sys.exit()
+            elif platform.system() == 'Windows':
+                query = f'docker login -u _json_key_base64 --password-stdin https://us-west2-docker.pkg.dev < {opt.key}'
+            os.system(query)
+            try:
+                print(f'Downloading Image from Google Cloud Platform with {opt.key} credentials')
+                client.images.pull(container_name)
+            except Exception as e:
+                print(e)
+                print('Error finding model. Please check organization and key.')
+                sys.exit()
                     
     available_algs = check_available_algs(container).split(',')
     alg_predefined=False
@@ -353,6 +358,11 @@ def run():
 
         opt.model = prompt(questions)['model']
 
+        ## Change the MODELNAME environmental variable
+        container.kill()
+        client.containers.prune()
+        container = client.containers.run(container_name,detach=True, name=f'sentinel_{opt.org}',ports={8501:8501},cpu_count=5,mem_limit='5g',environment=[f'MODEL_NAME={opt.model}'])
+    
     while True:
         if opt.input is None:
             opt.input = input("Input Folder: ")
