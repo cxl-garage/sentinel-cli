@@ -327,9 +327,12 @@ def run():
             if opt.key is None:
                 opt.key = input("Path to credential key: ")
             if platform.system() == 'Windows':
+                print('Adding auth key to Windows')
                 query = f'docker login -u _json_key --password-stdin https://us-west2-docker.pkg.dev < {opt.key}'
             else:
+                print('Adding auth key to Linux/Mac')
                 query = f'cat {opt.key} | docker login -u _json_key --password-stdin https://us-west2-docker.pkg.dev'
+            print(query)
             os.system(query)
             try:
                 print(f'Downloading Image from Google Cloud Platform with {opt.key} credentials')
