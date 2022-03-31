@@ -302,9 +302,7 @@ def run():
             break
         
     if opt.output is None:
-        opt.output = input("Output Folder (leave blank if same as input folder): ")
-        if opt.output == '':
-            opt.output = opt.input
+        opt.output = input("Output Folder (leave blank if output to current directory): ")
 
 
     
