@@ -17,85 +17,12 @@ from contextlib import closing
 import glob
 import sys
 import shutil
-import pandas as pd
-from datetime import datetime
-from PyInquirer import prompt
+import inquirer
 import platform
-import urllib.request
+
+import utils
 
 
-def connect(host='http://google.com'):
-    try:
-        urllib.request.urlopen(host) #Python 3.x
-        return True
-    except:
-        return False
-
-
-def check_available_algs(container): 
-    x = container.exec_run('env')
-    y = x[1].decode('utf-8').split('\n')
-    available_models = [i for i in y if 'AVAILABLE_MODELS' in i][0].split('=')[-1]
-    return available_models
-
-def generate_timelapse_file(opt):
-    print('\nGenerating timelapse json file')
-    shutil.copy('TimelapseTemplate.tdb', f"{opt.output}/TimelapseTemplate.tdb")
-
-    df = pd.read_csv(f'{opt.output}/detections.csv')
-    now = datetime.now()
-
-    dict = {}
-
-    dict['info'] = {"detector": f'{opt.org}_{opt.model}',
-                    "detection_completion_time": now.strftime("%Y-%m-%d, %H:%M:%S"),
-                    "format_version": "1.0"}
-
-    dict['detection_categories'] = {"1": "rat"}
-    dict['classification_categories'] = {"1": "rat"}
-
-
-    image_list = []
-
-    images = df['Path'].unique()
-    pbar = tqdm.tqdm(total=len(images))
-    k= 0
-    while k < len(images):
-
-
-        x = []
-        bb = df[(df['Path']==images[k]) & (df['Confidence'] !=0)]
-        m = 0
-        while m < len(bb):
-
-
-            if opt.output_style == 'flat':
-                out_path = r'{}/{}'.format(opt.output,os.path.basename(bb['Path'][0]))
-            elif opt.output_style == 'hierachy' or opt.output_style == 'timelapse':
-                out_path = bb['Path'][0].replace(f'{opt.input}\\','')
-            elif opt.output_style == 'none':
-                out_path = bb['Path'][0]
-            elif opt.output_style == 'class':
-                out_path = r'{}/{}/{}'.format(opt.output,bb['Class'][0],os.path.basename(os.path.basename(bb['Path'][0])))
-
-            bb_coco = eval(bb['Bounded Box'][m])
-            md_bb_list = [bb_coco[1],bb_coco[0],bb_coco[3]-bb_coco[1],bb_coco[2]-bb_coco[0]]
-            x.append({"category": str(int(float(bb['Class'][m]))), 
-                    "conf": float(bb['Confidence'][m]),
-                    "bbox": md_bb_list,
-                    "classifications":[[str(int(float(bb['Class'][m]))),1]]})
-            m = m + 1
-
-        image_list.append({"file": out_path.replace('\\', '/'),
-                        "max_detection_conf": float(bb['Confidence'].max()),
-                        "detections":x})
-        pbar.update(1)
-        k = k + 1
-    pbar.close()
-    dict['images'] = image_list
-    json_object = json.dumps(dict, indent = 3) 
-    with open(r'{}/timelapse.json'.format(opt.output), 'w') as outfile:
-        outfile.write(json_object)
 
 
 ## Function to process the image (this is a threaded function)
@@ -109,15 +36,14 @@ def process(filename):
     input_size  = int(os.environ.get('INPUT_SIZE'))
     output_style  = os.environ.get('OUTPUT_STYLE')
     model  = os.environ.get('MODEL')
+    class_names  = os.environ.get('CLASS_NAMES').split(',')
     # Make pictures with bounded boxes if requested
     
-
     if len(glob.glob(f"{output}/**/{os.path.basename(filename)}")) != 0:
         return 'Processed'
     else:
-        #try:
-        if True:
-            t1 = time.time()         
+        try:
+                   
             img = Image.open(filename)      
             image = img.resize([input_size,input_size])
             if output_size != 'None':
@@ -129,20 +55,14 @@ def process(filename):
             
             # Normalize and batchify the image
             im = np.expand_dims(np.array(image), 0).tolist()
-            
-            t2 = time.time() 
-
             url = 'http://localhost:8501/v1/models/{}:predict'.format(model)
             data = json.dumps({"signature_name": "serving_default", "instances": im})
             headers = {"content-type": "application/json"}
-            json_response = requests.post(url, data=data, headers=headers)
-    
+            json_response = requests.post(url, data=data, headers=headers,timeout=30)
             predictions = json.loads(json_response.text)['predictions'][0]
-            t3 = time.time() 
 
             # Check there are any predictions
             if predictions['output_1'][0] > confidence_threshold:
-
                 ## Continue to loop through predictions until the confidence is less than specified confidence threshold
                 x = 0
                 while True:
@@ -150,9 +70,8 @@ def process(filename):
                         bbox = [i / input_size for i in predictions['output_0'][x]]
                         class_id = predictions['output_2'][x]
                         confidence = predictions['output_1'][x]
-
-                        class_name = class_id
-
+                        class_name = class_names[int(class_id)-1]
+                        
                         # Make pictures with bounded boxes if requested
                         # Draw bounding_box
                         
@@ -163,15 +82,15 @@ def process(filename):
                             # Draw label and score
                             result_text = str(class_name) + ' (' + str(confidence) + ')'
                             draw.text((bbox[1] + 10, bbox[0] + 10),result_text,fill='red')
-                        
-                        detections.append([os.path.basename(filename),class_name,confidence,filename,bbox])
+                        entry = [os.path.basename(filename),class_name,class_id,confidence,filename,bbox]
+                        detections.append(entry)
 
                         x = x + 1
                     else:
                         break
             else:
-                class_id = 'Blank'
-                detections.append([os.path.basename(filename),0,0,filename,''])
+                class_name = 'blank'
+                detections.append([os.path.basename(filename),class_name,0,0,filename,''])
 
 
             if output_style == 'flat':
@@ -179,7 +98,7 @@ def process(filename):
             elif output_style == 'hierachy' or output_style == 'timelapse':
                 out_path = r'{}/{}'.format(output,filename.replace(input,''))
             elif output_style == 'class':
-                out_path = r'{}/{}/{}'.format(output,class_id,os.path.basename(filename))
+                out_path = r'{}/{}/{}'.format(output,class_name,os.path.basename(filename))
             elif output_style == 'none':
                 pass   
             else:
@@ -191,10 +110,9 @@ def process(filename):
                 except Exception as e:
                     os.makedirs(out_path.replace(os.path.basename(filename),''))
                     image_out.save(out_path)
-            t4 = time.time() 
-        #except Exception as e:
-        #    print(e)
-         #   detections.append([os.path.basename(filename),99,0,filename,''])
+        except Exception as e:
+            print(e)
+            detections.append([os.path.basename(filename),99,0,filename,''])
         return detections
 
 
@@ -207,6 +125,7 @@ def main(opt,container=None):
     os.environ['INPUT_SIZE'] = str(opt.input_size)
     os.environ['OUTPUT_STYLE'] = str(opt.output_style)
     os.environ['MODEL'] = opt.model   
+    os.environ['CLASS_NAMES'] = utils.get_class_names(container,opt.model)
 
     # Check resources available on current machine
     try:
@@ -238,13 +157,14 @@ def main(opt,container=None):
 
 
 
+
     num_workers = multiprocessing.cpu_count() - 2
-    print(f'\nProcessing on {num_workers} parallel threads')
+    print(f'\nProcessing on {num_workers} parallel threads. (It may take a few seconds to start!)')
     pbar = tqdm.tqdm(total=len(images))
     image_count = 0
     empty_count = 0
     with open(f'{opt.output}/detections.csv', 'a',newline='') as file:
-        fieldnames = [['File','Class','Confidence','Path','Bounded Box']]
+        fieldnames = [['File','Class Name','ClassID','Confidence','Path','Bounded Box']]
         writer = csv.writer(file)
         writer.writerows(fieldnames)
         detection_count = 0
@@ -252,15 +172,15 @@ def main(opt,container=None):
             detections = pool.imap_unordered(process,images)
             # open file and write out all rows from incoming lists of rows
             for detection in detections:
-                detection_count = detection_count + 1
                 if detection=='Processed':
                     pbar_text = 'Already Processed'
-                if detection[0][2] != 0:
+                elif detection[0][2] != 0:
                     detection_count = detection_count + 1
                 else:
                     empty_count = empty_count + 1
                 pbar_text = f'Found {detection_count} objects in {image_count} images. {empty_count} empty images'
-                writer.writerows(detection)
+                if detection!='Processed':
+                    writer.writerows(detection)
                 
                 pbar.set_description(pbar_text, refresh=True)
                 pbar.update(1)
@@ -269,7 +189,7 @@ def main(opt,container=None):
     pbar.close()
 
     if opt.output_style == 'timelapse':
-        generate_timelapse_file(opt)
+        utils.generate_timelapse_file(opt)
     
 
 ## Set up the processing parameters and fill in anything not covered by CLI parameters with user input
@@ -303,28 +223,33 @@ def run():
     opt = parser.parse_args()
 
     if opt.only_timelapse:
-        generate_timelapse_file(opt)
+        utils.generate_timelapse_file(opt)
         sys.exit(1)
     
 
     
     client = docker.from_env()
 
-
+    num_workers = multiprocessing.cpu_count() - 2
     ## Check Organization Bucket
     if opt.org is None:
         opt.org = input("Organization Name: ")
     container_name = "us-west2-docker.pkg.dev/sentinel-project-278421/{}/{}".format(opt.org,opt.org)
     try:
-        query = f'docker kill sentinel_{opt.org}'
+        query = f'docker kill sentinel'
         os.system(query)
         client.containers.prune()
-        client.images.pull(container_name)
-        container = client.containers.run(container_name,detach=True, name=f'sentinel_{opt.org}',ports={8501:8501},cpu_count=5,mem_limit='5g')
+        if utils.connect():
+            print('Pulling Container')
+            client.images.pull(container_name)
+        print('Starting container')
+        container = client.containers.run(container_name,detach=True, name=f'sentinel',ports={8501:8501},cpu_count=num_workers,mem_limit='5g')
         print('Container created successfully')
     except Exception as e:
-            
-            if opt.key is None:
+            if os.path.exists(f'{opt.org}.json'):
+                print('Key Found!')
+                opt.key = f'{opt.org}.json'
+            elif opt.key is None:
                 opt.key = input("Path to credential key: ")
             if platform.system() == 'Windows':
                 print('Adding auth key to Windows')
@@ -334,16 +259,17 @@ def run():
                 query = f'cat {opt.key} | docker login -u _json_key --password-stdin https://us-west2-docker.pkg.dev'
             print(query)
             os.system(query)
-            try:
+            while True:
                 print(f'Downloading Image from Google Cloud Platform with {opt.key} credentials')
-                client.images.pull(container_name)
-                container = client.containers.run(container_name,detach=True, name=f'sentinel_{opt.org}',ports={8501:8501},cpu_count=5,mem_limit='5g')
-            except Exception as e:
-                print(e)
-                print('Error finding model. Please check organization and key.')
-                sys.exit()
-                    
-    available_algs = check_available_algs(container).split(',')
+                container = client.containers.run(container_name,detach=True, name=f'sentinel',ports={8501:8501},cpu_count=num_workers,mem_limit='5g')
+            #except Exception as e:
+            #    print(e)
+            #    print('Error finding model. Please check organization and key.')
+            #    sys.exit()
+
+    time.sleep(10)
+
+    available_algs = utils.check_available_algs(container).split(',')
     alg_predefined=False
     for alg in available_algs:
         if alg == opt.model:
@@ -351,21 +277,20 @@ def run():
             print('Model found!')
     
     if opt.model is None or alg_predefined==False:
-        questions = [
-            {
-                'type': 'list',
-                'name': 'model',
-                'message': 'Model either not defined or incorrectly specified. Please select from available algorithms',
-                'choices': available_algs,
-            }
+        questions = [ 
+            inquirer.List(
+                "model",
+                message='Model either not defined or incorrectly specified. Please select from available algorithms',
+                choices = available_algs,
+        ),
         ]
 
-        opt.model = prompt(questions)['model']
+        opt.model = inquirer.prompt(questions)['model']
 
-        ## Change the MODELNAME environmental variable
-        container.kill()
-        client.containers.prune()
-        container = client.containers.run(container_name,detach=True, name=f'sentinel_{opt.org}',ports={8501:8501},cpu_count=5,mem_limit='5g',environment=[f'MODEL_NAME={opt.model}'])
+    ## Change the MODELNAME environmental variable
+    container.kill()
+    client.containers.prune()
+    container = client.containers.run(container_name,detach=True, name=f'sentinel',ports={8501:8501},cpu_count=num_workers,mem_limit='5g',environment=[f'MODEL_NAME={opt.model}'])
     
     while True:
         if opt.input is None:
@@ -380,8 +305,7 @@ def run():
         opt.output = input("Output Folder (leave blank if same as input folder): ")
         if opt.output == '':
             opt.output = opt.input
-    if opt.output == 'input':
-        opt.output = opt.input
+
 
     
 
@@ -394,8 +318,9 @@ def run():
     if not os.path.exists(opt.output):
         print('Output folder does not exist... Creating.')
         os.makedirs(opt.output)
-        client = docker.from_env()
-    
+    else:
+        opt.output = r'{}/{}'.format(opt.output, opt.model)
+        os.makedirs(opt.output)
     
     main(opt,container)
     
