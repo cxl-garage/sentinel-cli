@@ -331,4 +331,5 @@ def run():
 
 
 if __name__ == '__main__':
+    os.system('docker kill sentinel')
     run()
