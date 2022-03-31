@@ -66,14 +66,15 @@ Note: You will need around 2GB of spare space on your harddrive
 ### Installation
 
 1. Install [Python](https://www.python.org/downloads/) OR (Optional) Install [Anaconda](https://www.anaconda.com/products/distribution) if you are concerned about your other code on your system. Anaconda also makes managing python versions and creating virtual environments very easy. (Make sure you are using Python 3!!)
-2. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) (AND MAKE SURE THAT DOCKER IS RUNNING)
+2. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) 
 3. Clone this repo either through command line (```git clone https://github.com/cxl-garage/sentinel-cli.git```) or use [GitHub Desktop](https://desktop.github.com/)
 4. (If using private model) Paste the json key into the sentinel-cli directory
 5. Open up a command line interface (PowerShell) (if you are using Anaconda, go to Prompt) 
 6. Navigate to sentinel-cli github directory in command line
 7. Download Sentinel Python Package ```pip install -r requirements.txt```
 8. If using private algorithms (you should know if this is the case) - add the provided .json key to your machine 
-9. Follow Usage Instructions
+9. Make sure docker is running on your computer (and that the current user has access to the daemon). See more [here](https://docs.docker.com/engine/install/linux-postinstall/)
+10. Follow Usage Instructions
 
 
 ## CLI (Command Line Interface) Example Command
