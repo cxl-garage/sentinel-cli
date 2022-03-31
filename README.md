@@ -72,20 +72,20 @@ Note: You will need around 2GB of spare space on your harddrive
 6. Navigate to sentinel-cli github directory in command line
 7. Download Sentinel Python Package ```pip install -r requirements.txt```
 8. If using private algorithms (you should know if this is the case) - add the provided .json key to your setinel-cli directory
-9. Make sure docker is running on your computer (and that the current user has access to the daemon). See more [here](https://docs.docker.com/engine/install/linux-postinstall/)
-10. Follow Usage Instructions
+9. Make sure docker is running on your computer. If the program gives an API error, see more about starting docker [here](https://docs.docker.com/engine/install/linux-postinstall/)
+10. Follow Usage Instructions below
 
 
 ## CLI (Command Line Interface) Example Command
 
-(Make
-### User Input 
+
+### User Input (start with this)
 ```
   python app.py 
 ```
 User will be prompted for paramaters in the command line. See API Guide below
 
-### No user input
+### No user input (use this if you are running things again and again)
 ```
   python app.py --org <ORG_NAME> --model <MODEL_NAME> --input <INPUT_PATH> --output <OUTPUT_PATH> --thresh <CONFIDENCE_THRESHOLD> --output_style <HIERACHY>
 ```
