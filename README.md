@@ -66,7 +66,7 @@ Note: You will need around 2GB of spare space on your harddrive
 ### Installation
 
 1. Install [Python](https://www.python.org/downloads/) OR (Optional) Install [Anaconda](https://www.anaconda.com/products/distribution) if you are concerned about your other code on your system. Anaconda also makes managing python versions and creating virtual environments very easy. (Make sure you are using Python 3!!)
-2. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+2. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) (AND MAKE SURE THAT DOCKER IS RUNNING)
 3. Clone this repo either through command line (```git clone https://github.com/cxl-garage/sentinel-cli.git```) or use [GitHub Desktop](https://desktop.github.com/)
 4. (If using private model) Paste the json key into the sentinel-cli directory
 5. Open up a command line interface (PowerShell) (if you are using Anaconda, go to Prompt) 
