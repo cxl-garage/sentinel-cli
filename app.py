@@ -56,7 +56,18 @@ def process(filename):
             # Normalize and batchify the image
             im = np.expand_dims(np.array(image), 0).tolist()
             url = 'http://localhost:8501/v1/models/{}:predict'.format(model)
-            data = json.dumps({"signature_name": "serving_default", "instances": im})
+            k = 0
+            while True:
+                if k == 10:
+                    data = json.dumps({"signature_name": "serving_default", "instances": im})
+                else:
+                    try:
+                        data = json.dumps({"signature_name": "serving_default", "instances": im})
+                        break
+                    except Exception as e:
+                        time.sleep(0.2)
+                        k = k + 1
+            
             headers = {"content-type": "application/json"}
             json_response = requests.post(url, data=data, headers=headers,timeout=30)
             predictions = json.loads(json_response.text)['predictions'][0]
@@ -267,7 +278,7 @@ def run():
             #    print('Error finding model. Please check organization and key.')
             #    sys.exit()
 
-    time.sleep(10)
+    #time.sleep(10)
 
     available_algs = utils.check_available_algs(container).split(',')
     alg_predefined=False
