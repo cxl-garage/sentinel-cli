@@ -323,13 +323,13 @@ def run():
             shutil.rmtree(opt.output)
         except OSError as e:
             print("Error: %s : %s" % (opt.output, e.strerror))
+    
     # Check if output folder exists, and create it if it doesn't
+    opt.output = r'{}/{}'.format(opt.output, opt.model)
     if not os.path.exists(opt.output):
         print('Output folder does not exist... Creating.')
         os.makedirs(opt.output)
-    else:
-        opt.output = r'{}/{}'.format(opt.output, opt.model)
-        os.makedirs(opt.output)
+
     
     main(opt,container)
     

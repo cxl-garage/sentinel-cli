@@ -75,6 +75,7 @@ def connect(host='http://google.com'):
 
 def get_class_names(container,alg_name): 
     x = container.exec_run('env')
+    print(x)
     y = x[1].decode('utf-8').split('\n')
     class_names = [i for i in y if f'{alg_name.upper()}_CLASSES' in i][0].split('=')[-1]
     class_names = class_names.replace(',???','')
